@@ -12,9 +12,9 @@ from typing import Iterable, TextIO
 
 import numpy as np
 from matplotlib import pyplot as plt
+from PIL import Image
 from pypinyin import Style, pinyin
 from wordcloud import WordCloud
-from PIL import Image
 
 
 def flatten(items: Iterable) -> Iterable:

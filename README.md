@@ -1,6 +1,6 @@
 # 汉兜猜词记录
 
-##
+需要`pypinyin, wordcloud, PIL, numpy, matplotlib`库。
 
 ## 成语列表
 
@@ -11,3 +11,7 @@
 ## 词云的字体
 
 `qiji-combo.tff`来自开源项目[齊伋體 qiji-font](https://github.com/LingDong-/qiji-font)。
+
+## 词云输出效果
+
+![词云输出效果](./wc_idiom.jpg)

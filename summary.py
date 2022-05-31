@@ -52,7 +52,7 @@ def get_pinyin(idiom: str) -> tuple:
 def read_idioms(idioms_file: TextIO) -> list:
     """return a true idiom list"""
     with open(idioms_file, "r", encoding="utf-8") as file:
-        idioms = [line.replace("\n", "") for line in file]
+        idioms = [line.split()[0] for line in file]
     return idioms
 
 
@@ -101,7 +101,8 @@ def main():
     # remove false idiom in phrases
     phrases_list = list(flatten(phrases_list))  # flatten nest list
     idioms_filter = [
-        is_idiom(idiom, read_idioms("./idioms.txt")) for idiom in phrases_list
+        is_idiom(idiom, read_idioms("./THUOCL_chengyu.txt"))
+        for idiom in phrases_list
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))
 
@@ -132,9 +133,9 @@ def main():
     print(f"无提示比率：{np.round(100 * (1 - sum(hint_list) / len(hint_list)))}%")
     print(f"输入四字短语个数：{len(phrases_list)}个")
     print(
-        f"真成语个数：{len(idioms_list)}，真成语比例：{np.round(100*len(idioms_list)/len(phrases_list))}%"
+        f"其中成语个数：{len(idioms_list)}，成语比例：{np.round(100*len(idioms_list)/len(phrases_list))}%"
     )
-    print(f"最常用的成语top 10：{list(idioms_dict.items())[0:9]}")
+    # print(f"最常用的成语top 10：{list(idioms_dict.items())[0:9]}")
     print(f"总尝试次数：{sum(num_of_tries_list)}次")
     print(f"最多尝试次数：{max(num_of_tries_list)}次")
     print(f"最少尝试次数：{min(num_of_tries_list)}次")
@@ -174,12 +175,15 @@ def main():
     wc_idiom = WordCloud(prefer_horizontal=1,
                          background_color="white",
                          font_path=wc_font,
+                         max_font_size=500,
                          mask=wc_mask,
                          width=2000,
-                         height=1500 * 0.618)
+                         height=2000 * 0.618)
     wc_idiom.generate_from_frequencies(idioms_dict)
+    ax_wc.set_position([0.05, 0.05, 0.9, 0.9])
     plt.imshow(wc_idiom)
-    plt.savefig("./wc_idiom.jpg", dpi=600)
+    plt.axis("off")
+    plt.savefig("./wc_idiom.jpg", dpi=1000)
 
     plt.show()
 

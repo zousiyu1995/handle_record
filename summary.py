@@ -7,14 +7,16 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
-from typing import Iterable
+from typing import Iterable, TextIO
 
 import numpy as np
 from matplotlib import pyplot as plt
 from pypinyin import Style, pinyin
+from wordcloud import WordCloud
+from PIL import Image
 
 
-def flatten(items):
+def flatten(items: Iterable) -> Iterable:
     """flatten nested iterable object"""
     for item in items:
         if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
@@ -47,16 +49,23 @@ def get_pinyin(idiom: str) -> tuple:
     return initial, final, tone
 
 
-def read_idioms(idioms_file) -> list:
+def read_idioms(idioms_file: TextIO) -> list:
     """return a true idiom list"""
     with open(idioms_file, "r", encoding="utf-8") as file:
-        idioms = [line.removesuffix("\n") for line in file]
+        idioms = [line.replace("\n", "") for line in file]
     return idioms
 
 
 def is_idiom(phrase: str, idioms: list) -> bool:
     """is **true** idiom?"""
     return phrase in idioms
+
+
+def save_dict_to_json(a_dict: dict, file_name: str) -> None:
+    with open(file_name, mode='w+', encoding='utf-8') as file:
+        file.write(json.dumps(a_dict, ensure_ascii=False, indent=4))
+
+    return None
 
 
 def main():
@@ -69,7 +78,7 @@ def main():
     time_of_tries_list = []
     hint_list = []
     num_of_wins = 0
-    max_num_of_tries: int = 10
+    max_num_of_tries = 10
 
     with open("summary.json", "r", encoding="utf-8") as json_file:
         all_days: list = json.load(json_file)
@@ -109,6 +118,12 @@ def main():
     finals_dict = list_to_sorted_dict(finals_list)
     tones_dict = list_to_sorted_dict(tones_list)
     num_of_tries_dict = Counter(num_of_tries_list)
+    # num_of_tries_dict = list_to_sorted_dict(num_of_tries_list)
+
+    save_dict_to_json(idioms_dict, "./output_idioms.json")
+    save_dict_to_json(initials_dict, "./output_initials.json")
+    save_dict_to_json(finals_dict, "./output_finals.json")
+    save_dict_to_json(num_of_tries_dict, "./output_num_of_tries.json")
 
     # summary
     print(
@@ -151,6 +166,20 @@ def main():
     plt.xlabel("number of tries")
     plt.ylabel("frequency")
     plt.xticks(np.arange(0, 12, 1))
+
+    # generate word cloud
+    fig_wc, ax_wc = plt.subplots()
+    wc_mask = np.array(Image.open("./mask.png"))
+    wc_font = r"./qiji-combo.ttf"
+    wc_idiom = WordCloud(prefer_horizontal=1,
+                         background_color="white",
+                         font_path=wc_font,
+                         mask=wc_mask,
+                         width=2000,
+                         height=1500 * 0.618)
+    wc_idiom.generate_from_frequencies(idioms_dict)
+    plt.imshow(wc_idiom)
+    plt.savefig("./wc_idiom.jpg", dpi=600)
 
     plt.show()
 

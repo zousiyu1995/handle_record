@@ -1,20 +1,17 @@
 """
 author: zousiyu
 date: 2022.05.31
-summarize handle data
+summarize 'handle' (汉兜) data
 """
 
 import itertools
 import json
 from collections import Counter
 from datetime import timedelta
-from typing import Iterable, TextIO
+from typing import Iterable, TextIO  # for type hints
 
 import numpy as np
-from matplotlib import pyplot as plt
-from PIL import Image
 from pypinyin import Style, pinyin
-from wordcloud import WordCloud
 
 
 def flatten(items: Iterable) -> Iterable:
@@ -63,6 +60,7 @@ def is_idiom(phrase: str, idioms: list) -> bool:
 
 
 def save_dict_to_json(a_dict: dict, file_name: str) -> None:
+    """save counter dict to json"""
     with open(file_name, mode='w+', encoding='utf-8') as file:
         file.write(json.dumps(a_dict, ensure_ascii=False, indent=4))
 
@@ -125,68 +123,30 @@ def main():
     save_dict_to_json(idioms_dict, "./output_idioms.json")
     save_dict_to_json(initials_dict, "./output_initials.json")
     save_dict_to_json(finals_dict, "./output_finals.json")
+    save_dict_to_json(tones_dict, "./output_tones.json")
     save_dict_to_json(num_of_tries_dict, "./output_num_of_tries.json")
 
     # summary
     print(
-        f"游戏天数：{len(all_days)}天，获胜天数：{num_of_wins}天，胜率{round(100 * num_of_wins / len(all_days))}%"
+        f"游戏天数：{len(all_days)}天，获胜天数：{num_of_wins}天，胜率：{round(100 * num_of_wins / len(all_days))}%"
     )
-    print(f"无提示比率：{np.round(100 * (1 - sum(hint_list) / len(hint_list)))}%")
-    print(f"输入四字短语个数：{len(phrases_list)}个")
     print(
-        f"其中成语个数：{len(idioms_list)}，成语比例：{np.round(100*len(idioms_list)/len(phrases_list))}%"
+        f"无提示天数：{len(all_days)-np.sum(hint_list)}天，无提示比率：{np.round(100 * (1 - sum(hint_list) / len(hint_list)))}%"
     )
+    print(f"输入四字短语总个数：{len(phrases_list)}个")
+    print(f"其中成语个数：{len(idioms_list)}个")
+    print(f"成语比例：{np.round(100*len(idioms_list)/len(phrases_list))}%")
     # print(f"最常用的成语top 10：{list(idioms_dict.items())[0:9]}")
-    print(f"总尝试次数：{sum(num_of_tries_list)}次")
-    print(f"最多尝试次数：{max(num_of_tries_list)}次")
-    print(f"最少尝试次数：{min(num_of_tries_list)}次")
-    print(f"平均尝试次数：{np.round(np.mean(num_of_tries_list))}次")
+    print(f"总尝试：{sum(num_of_tries_list)}次")
+    print(f"最多尝试：{max(num_of_tries_list)}次")
+    print(f"最少尝试：{min(num_of_tries_list)}次")
+    print(f"平均尝试：{np.round(np.mean(num_of_tries_list))}次")
     print(
-        f"总浪费时间：{sec_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
+        f"总用时：{sec_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
     )
     print(f"平均用时：{sec_to_time_str(np.mean(time_of_tries_list).seconds)}")
     print(f"最长用时：{sec_to_time_str(max(time_of_tries_list).seconds)}")
     print(f"最短用时：{sec_to_time_str(min(time_of_tries_list).seconds)}")
-
-    plt.subplots()
-    plt.bar(initials_dict.keys(), initials_dict.values())
-    plt.xlabel("initial")
-    plt.ylabel("frequency")
-
-    plt.subplots()
-    plt.bar(finals_dict.keys(), finals_dict.values())
-    plt.xlabel("final")
-    plt.ylabel("frequency")
-
-    plt.subplots()
-    plt.bar(tones_dict.keys(), tones_dict.values())
-    plt.xlabel("tone")
-    plt.ylabel("frequency")
-
-    plt.subplots()
-    plt.bar(num_of_tries_dict.keys(), num_of_tries_dict.values())
-    plt.xlabel("number of tries")
-    plt.ylabel("frequency")
-    plt.xticks(np.arange(0, 12, 1))
-
-    # generate word cloud
-    fig_wc, ax_wc = plt.subplots()
-    wc_mask = np.array(Image.open("./mask.png"))
-    wc_font = r"./qiji-combo.ttf"
-    wc_idiom = WordCloud(prefer_horizontal=1,
-                         background_color="white",
-                         font_path=wc_font,
-                         max_font_size=500,
-                         mask=wc_mask,
-                         width=2000,
-                         height=2000 * 0.618)
-    wc_idiom.generate_from_frequencies(idioms_dict)
-    ax_wc.set_position([0.05, 0.05, 0.9, 0.9])
-    plt.imshow(wc_idiom)
-    plt.axis("off")
-    plt.savefig("./wc_idiom.jpg", dpi=1000)
-
-    plt.show()
 
 
 if __name__ == "__main__":

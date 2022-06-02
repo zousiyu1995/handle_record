@@ -39,12 +39,29 @@ def sec_to_time_str(sec: int) -> str:
 
 def get_pinyin(idiom: str) -> tuple:
     """get initial, final and tone of single idiom"""
-    initial = pinyin(idiom, style=Style.INITIALS, strict=False)
-    final_tone: str = pinyin(idiom, style=Style.FINALS_TONE3)[0][0]
-    final = final_tone[0:-1]
-    tone = final_tone[-1]
+    initials = []
+    finals = []
+    tones = []
+    for char in idiom:
+        initial: str = list(
+            flatten(pinyin(char, style=Style.INITIALS, strict=False)))[0]
+        if initial == '':
+            initial = '_'
+        initials.append(initial)
 
-    return initial, final, tone
+        # TODO: 如何更优雅地分离字符串中的数字
+        final_and_tone: str = list(
+            flatten(pinyin(char, style=Style.FINALS_TONE3, strict=False)))[0]
+        # 只要字符串的最后一位是数字，有声调和韵母，添加tones和finals
+        if final_and_tone[-1].isdigit():
+            tones.append(final_and_tone[-1])
+            finals.append(final_and_tone[0:-1])
+        # 如果字符串的最后一位不是数字，代表没有声调，声调设置成'_'，韵母为整个字符串
+        else:
+            tones.append('_')
+            finals.append(final_and_tone)
+
+    return initials, finals, tones
 
 
 def read_idioms(idioms_file: TextIO) -> list:
@@ -107,10 +124,10 @@ def main():
 
     # update initial, final, and tone of idiom
     for idiom in idioms_list:
-        initial, final, tone = get_pinyin(idiom)
-        initials_list.append(initial)
-        finals_list.append(final)
-        tones_list.append(tone)
+        initials, finals, tones = get_pinyin(idiom)
+        initials_list.append(initials)
+        finals_list.append(finals)
+        tones_list.append(tones)
 
     # convert list to dict, all infos are true idiom
     idioms_dict = list_to_sorted_dict(idioms_list)

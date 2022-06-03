@@ -3,7 +3,6 @@ author: zousiyu
 date: 2022.06.01
 plot 'handle' (汉兜) data
 """
-from asyncore import read
 import json
 from typing import TextIO  # for type hints
 from matplotlib import pyplot as plt
@@ -20,29 +19,6 @@ def read_data(file_path: str) -> dict:
 
 
 idioms = read_data("./output_idioms.json")
-initials = read_data("./output_initials.json")
-finals = read_data("./output_finals.json")
-tones = read_data("./output_tones.json")
-
-# plot summary data
-# fig = plt.figure(figsize=(25 * 0.3937, 13 * 0.3937))
-# # ax1 = fig.add_subplot(3, 1, 1)
-# ax1 = fig.add_axes([0.1, 0.75, 0.85, 0.2])
-# ax1.bar(initials.keys(), initials.values())
-# ax1.set_xlabel("initial")
-# ax1.set_ylabel("frequency")
-# # ax1.set_xticklabels(initials.keys(), fontsize=6)
-
-# ax2 = fig.add_axes([0.1, 0.45, 0.85, 0.2])
-# ax2.bar(finals.keys(), finals.values())
-# ax2.set_xlabel("final")
-# ax2.set_ylabel("frequency")
-# ax2.set_xticklabels(finals.keys(), rotation=45)
-
-# ax3 = fig.add_axes([0.1, 0.1, 0.85, 0.2])
-# ax3.bar(tones.keys(), tones.values())
-# ax3.set_xlabel("tone")
-# ax3.set_ylabel("frequency")
 
 # generate word cloud
 wc_fig = plt.figure()

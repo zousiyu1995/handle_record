@@ -31,10 +31,16 @@ def list_to_sorted_dict(a_list: list) -> dict:
     return dict(sorted(a_dict.items(), key=lambda item: item[1], reverse=True))
 
 
-def sec_to_time_str(sec: int) -> str:
-    """int second to 'xx分xx秒' """
+def seconds_to_time_str(seconds: int) -> str:
+    """int second to 'xx时xx分xx秒' """
 
-    return f"{divmod(sec, 60)[0]}分{divmod(sec, 60)[1]}秒"
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+
+    if h == 0:
+        return f"{m}分{s}秒"
+    else:
+        return f"{h}时{m}分{s}秒"
 
 
 def get_pinyin(idiom: str) -> tuple:
@@ -159,11 +165,11 @@ def main():
     print(f"最少尝试：{min(num_of_tries_list)}次")
     print(f"平均尝试：{np.round(np.mean(num_of_tries_list))}次")
     print(
-        f"总用时：{sec_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
+        f"总用时：{seconds_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
     )
-    print(f"平均用时：{sec_to_time_str(np.mean(time_of_tries_list).seconds)}")
-    print(f"最长用时：{sec_to_time_str(max(time_of_tries_list).seconds)}")
-    print(f"最短用时：{sec_to_time_str(min(time_of_tries_list).seconds)}")
+    print(f"平均用时：{seconds_to_time_str(np.mean(time_of_tries_list).seconds)}")
+    print(f"最长用时：{seconds_to_time_str(max(time_of_tries_list).seconds)}")
+    print(f"最短用时：{seconds_to_time_str(min(time_of_tries_list).seconds)}")
 
 
 if __name__ == "__main__":

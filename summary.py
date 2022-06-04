@@ -117,7 +117,7 @@ def main():
     # remove false idiom in phrases
     phrases_list = list(flatten(phrases_list))  # flatten nest list
     idioms_filter = [
-        is_idiom(idiom, read_idioms("./THUOCL_chengyu.txt"))
+        is_idiom(idiom, read_idioms("./idiom/idiom_from_THUOCL_chengyu.txt"))
         for idiom in phrases_list
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))
@@ -137,11 +137,11 @@ def main():
     num_of_tries_dict = Counter(num_of_tries_list)
     # num_of_tries_dict = list_to_sorted_dict(num_of_tries_list)
 
-    save_dict_to_json(idioms_dict, "./output_idioms.json")
-    save_dict_to_json(initials_dict, "./output_initials.json")
-    save_dict_to_json(finals_dict, "./output_finals.json")
-    save_dict_to_json(tones_dict, "./output_tones.json")
-    save_dict_to_json(num_of_tries_dict, "./output_num_of_tries.json")
+    save_dict_to_json(idioms_dict, "./output/idioms.json")
+    save_dict_to_json(initials_dict, "./output/initials.json")
+    save_dict_to_json(finals_dict, "./output/finals.json")
+    save_dict_to_json(tones_dict, "./output/tones.json")
+    save_dict_to_json(num_of_tries_dict, "./output/num_of_tries.json")
 
     # summary
     print(

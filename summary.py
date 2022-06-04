@@ -125,7 +125,7 @@ def main():
     phrases_list = list(flatten(phrases_list))  # flatten nest list
     idioms_filter = [
         is_idiom(idiom,
-                 read_idioms("./idiom/idiom_from_chinese_xinhua_simple.json"))
+                 read_idioms("./idiom/idioms_from_chinese_xinhua_simple.json"))
         for idiom in phrases_list
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))

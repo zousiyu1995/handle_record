@@ -73,7 +73,8 @@ def get_pinyin(idiom: str) -> tuple:
 def read_idioms(idioms_file: TextIO) -> list:
     """return a true idiom list"""
     with open(idioms_file, "r", encoding="utf-8") as file:
-        idioms = [line.split()[0] for line in file]
+        # idioms = [line.split()[0] for line in file] # for text file
+        idioms = json.load(file)  # for json file
     return idioms
 
 
@@ -123,7 +124,8 @@ def main():
     # remove false idiom in phrases
     phrases_list = list(flatten(phrases_list))  # flatten nest list
     idioms_filter = [
-        is_idiom(idiom, read_idioms("./idiom/idiom_from_THUOCL_chengyu.txt"))
+        is_idiom(idiom,
+                 read_idioms("./idiom/idiom_from_chinese_xinhua_simple.json"))
         for idiom in phrases_list
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))

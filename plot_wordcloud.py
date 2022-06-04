@@ -3,6 +3,7 @@ author: zousiyu
 date: 2022.06.01
 plot 'handle' (汉兜) data
 """
+
 import json
 from typing import TextIO  # for type hints
 from matplotlib import pyplot as plt
@@ -18,12 +19,12 @@ def read_data(file_path: str) -> dict:
         return json.load(json_file)
 
 
-idioms = read_data("./output_idioms.json")
+idioms = read_data("./output/idioms.json")
 
 # generate word cloud
 wc_fig = plt.figure()
 wc_ax = wc_fig.add_axes([0.025, 0.025, 0.95, 0.95])
-wc_mask = np.array(Image.open("./mask.png"))
+wc_mask = np.array(Image.open("./wc_mask.png"))
 wc_font = r"./qiji-combo.ttf"
 wc = WordCloud(prefer_horizontal=1,
                background_color="white",

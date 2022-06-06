@@ -2,11 +2,11 @@ clear
 close all
 clc
 
-idioms = load_data('./output_idioms.json', 'idioms');
-initials = load_data('./output_initials.json', 'initials');
-finals = load_data('./output_finals.json', 'finals');
-tones = load_data('./output_tones.json', 'tones');
-num_of_tries = load_data('./output_num_of_tries.json', 'num_of_tries');
+idioms = load_data('./output/idioms.json', 'idioms');
+initials = load_data('./output/initials.json', 'initials');
+finals = load_data('./output/finals.json', 'finals');
+tones = load_data('./output/tones.json', 'tones');
+num_of_tries = load_data('./output/num_of_tries.json', 'num_of_tries');
 
 fig = figure;
 adjust_fig(fig);
@@ -57,7 +57,7 @@ end
 
 function adjust_fig(fig)
 fig.Units = 'centimeters';
-fig.Position(1:2) = [15, 15];
+fig.Position(1:2) = [10, 10];
 fig.Position(3:4) = [20, 14];
 fig.Color = [1.0, 1.0, 1.0];
 fig.Renderer = "painters";

@@ -30,6 +30,7 @@ wc = WordCloud(prefer_horizontal=1,
                background_color="white",
                font_path=wc_font,
                max_font_size=500,
+               relative_scaling=1,
                mask=wc_mask,
                width=2000,
                height=2000 * 0.618)

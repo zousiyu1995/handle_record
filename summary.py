@@ -8,6 +8,7 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
+from pyexpat import model
 from typing import Iterable, TextIO  # for type hints
 
 import numpy as np
@@ -150,6 +151,12 @@ def main():
     save_dict_to_json(finals_dict, "./output/finals.json")
     save_dict_to_json(tones_dict, "./output/tones.json")
     save_dict_to_json(num_of_tries_dict, "./output/num_of_tries.json")
+
+    with open("./output/time_of_tries.json", mode="w+", encoding="utf-8") as f:
+        f.write(
+            json.dumps(list(map(str, time_of_tries_list)),
+                       ensure_ascii=False,
+                       indent=4))
 
     # summary
     print(

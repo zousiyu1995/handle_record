@@ -8,6 +8,8 @@ finals = load_data('./output/finals.json', 'finals');
 tones = load_data('./output/tones.json', 'tones');
 num_of_tries = load_data('./output/num_of_tries.json', 'num_of_tries');
 
+time_of_tries = duration(loadjson('./output/time_of_tries.json')); % histogram
+
 fig = figure;
 adjust_fig(fig);
 

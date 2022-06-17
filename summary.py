@@ -57,6 +57,7 @@ def get_pinyin(idiom: str) -> tuple:
         initials.append(initial)
 
         # TODO: 如何更优雅地分离字符串中的数字
+        # TODO: 如何处理成语中的特殊发音
         final_and_tone: str = list(
             flatten(pinyin(char, style=Style.FINALS_TONE3, strict=False)))[0]
         # 只要字符串的最后一位是数字，有声调和韵母，添加tones和finals
@@ -146,19 +147,19 @@ def main():
     num_of_tries_dict = Counter(num_of_tries_list)
     # num_of_tries_dict = list_to_sorted_dict(num_of_tries_list)
 
+    # save data
     save_dict_to_json(idioms_dict, "./output/idioms.json")
     save_dict_to_json(initials_dict, "./output/initials.json")
     save_dict_to_json(finals_dict, "./output/finals.json")
     save_dict_to_json(tones_dict, "./output/tones.json")
     save_dict_to_json(num_of_tries_dict, "./output/num_of_tries.json")
-
     with open("./output/time_of_tries.json", mode="w+", encoding="utf-8") as f:
         f.write(
             json.dumps(list(map(str, time_of_tries_list)),
                        ensure_ascii=False,
                        indent=4))
 
-    # summary
+    # print summary
     print(
         f"游戏天数：{len(all_days)}天，获胜天数：{num_of_wins}天，胜率：{round(100 * num_of_wins / len(all_days))}%"
     )

@@ -29,8 +29,9 @@ wc_font = r"./qiji-combo.ttf"
 wc = WordCloud(prefer_horizontal=1,
                background_color="white",
                font_path=wc_font,
-               max_font_size=500,
-               relative_scaling=1,
+               max_font_size=400,
+               max_words=300,
+               relative_scaling=0.8,
                mask=wc_mask,
                width=2000,
                height=2000 * 0.618)

@@ -164,7 +164,7 @@ def main():
         f"游戏天数：{len(all_days)}天，获胜天数：{num_of_wins}天，胜率：{round(100 * num_of_wins / len(all_days))}%"
     )
     print(
-        f"无提示天数：{len(all_days)-np.sum(hint_list)}天，无提示比率：{np.round(100 * (1 - sum(hint_list) / len(hint_list)))}%"
+        f"无提示游戏天数：{len(all_days)-np.sum(hint_list)}天，无提示游戏比率：{np.round(100 * (1 - sum(hint_list) / len(hint_list)))}%"
     )
     print(f"输入四字短语总个数：{len(phrases_list)}个")
     print(f"其中成语个数：{len(idioms_list)}个")

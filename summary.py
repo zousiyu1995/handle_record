@@ -8,7 +8,6 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
-from pyexpat import model
 from typing import Iterable, TextIO  # for type hints
 
 import numpy as np
@@ -56,7 +55,7 @@ def get_pinyin(idiom: str) -> tuple:
             initial = '_'
         initials.append(initial)
 
-        # TODO: 如何更优雅地分离字符串中的数字
+        # TODO: 如何更好地分离字符串中的数字
         # TODO: 如何处理成语中的特殊发音
         final_and_tone: str = list(
             flatten(pinyin(char, style=Style.FINALS_TONE3, strict=False)))[0]

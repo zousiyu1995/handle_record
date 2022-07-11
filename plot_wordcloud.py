@@ -19,7 +19,8 @@ def read_data(file_path: str) -> dict:
         return json.load(json_file)
 
 
-idioms = read_data("./output/idioms.json")
+idioms = read_data("./output/opening_idioms.json")
+# idioms = read_data("./output/idioms.json")
 
 # generate word cloud
 wc_fig = plt.figure()

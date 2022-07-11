@@ -95,6 +95,7 @@ def save_dict_to_json(a_dict: dict, file_name: str) -> None:
 def main():
     """main"""
     phrases_list = []
+    opening_phrases_list = []
     initials_list = []
     finals_list = []
     tones_list = []
@@ -109,6 +110,7 @@ def main():
         for every_day in all_days:
             # update phrase, some phrase isn't idiom
             phrases_list.append(every_day['idiom'])
+            opening_phrases_list.append(every_day['idiom'][0])
             # update number of tries, time of tries
             num_of_tries_list.append(len(every_day['idiom']))
             splited_time = list(map(int, every_day['time'].split(":")))
@@ -131,6 +133,10 @@ def main():
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))
 
+    # remove false idiom in opening phrases
+    opening_idioms_list = list(
+        itertools.compress(opening_phrases_list, idioms_filter))
+
     # update initial, final, and tone of idiom
     for idiom in idioms_list:
         initials, finals, tones = get_pinyin(idiom)
@@ -140,6 +146,7 @@ def main():
 
     # convert list to dict, all infos are true idiom
     idioms_dict = list_to_sorted_dict(idioms_list)
+    opening_idioms_dict = list_to_sorted_dict(opening_idioms_list)
     initials_dict = list_to_sorted_dict(initials_list)
     finals_dict = list_to_sorted_dict(finals_list)
     tones_dict = list_to_sorted_dict(tones_list)
@@ -148,6 +155,7 @@ def main():
 
     # save data
     save_dict_to_json(idioms_dict, "./output/idioms.json")
+    save_dict_to_json(opening_idioms_dict, "./output/opening_idioms.json")
     save_dict_to_json(initials_dict, "./output/initials.json")
     save_dict_to_json(finals_dict, "./output/finals.json")
     save_dict_to_json(tones_dict, "./output/tones.json")

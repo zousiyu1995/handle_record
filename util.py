@@ -1,5 +1,7 @@
 import itertools
+from collections import Counter
 from typing import Iterable
+
 from pypinyin import Style, pinyin
 
 
@@ -11,6 +13,27 @@ def flatten(items: Iterable) -> Iterable:
                 yield sub_item
         else:
             yield item
+
+
+def list_to_sorted_dict(input_list: list) -> dict:
+    """element->key, count of element->value, sort by value"""
+
+    return dict(
+        sorted(Counter(list(flatten(input_list))).items(),
+               key=lambda item: item[1],
+               reverse=True))
+
+
+def int_seconds_to_time_str(seconds: int) -> str:
+    """int second to 'xx分xx秒' or 'xx时xx分xx秒' """
+
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+
+    if h == 0:
+        return f"{m}分{s}秒"
+    else:
+        return f"{h}时{m}分{s}秒"
 
 
 def get_pinyin(idiom: str) -> tuple:

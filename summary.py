@@ -1,6 +1,5 @@
 """
 author: zousiyu
-date: 2022.05.31
 summarize 'handle' (汉兜) data
 """
 
@@ -11,26 +10,7 @@ from datetime import timedelta
 from typing import TextIO  # for type hints
 
 import numpy as np
-from util import flatten, get_pinyin, get_score
-
-
-def list_to_sorted_dict(a_list: list) -> dict:
-    """element->key, count of element->value, sort by value"""
-    a_dict = Counter(list(flatten(a_list)))
-
-    return dict(sorted(a_dict.items(), key=lambda item: item[1], reverse=True))
-
-
-def seconds_to_time_str(seconds: int) -> str:
-    """int second to 'xx时xx分xx秒' """
-
-    m, s = divmod(seconds, 60)
-    h, m = divmod(m, 60)
-
-    if h == 0:
-        return f"{m}分{s}秒"
-    else:
-        return f"{h}时{m}分{s}秒"
+from util import flatten, list_to_sorted_dict, int_seconds_to_time_str, get_pinyin, get_score
 
 
 def read_idioms(idioms_file: TextIO) -> list:
@@ -41,15 +21,10 @@ def read_idioms(idioms_file: TextIO) -> list:
     return idioms
 
 
-def is_idiom(phrase: str, idioms: list) -> bool:
-    """is **true** idiom?"""
-    return phrase in idioms
-
-
-def save_dict_to_json(a_dict: dict, file_name: str) -> None:
-    """save counter dict to json"""
+def save_to_json(data, file_name: str) -> None:
+    """save to json"""
     with open(file_name, mode='w+', encoding='utf-8') as file:
-        file.write(json.dumps(a_dict, ensure_ascii=False, indent=4))
+        file.write(json.dumps(data, ensure_ascii=False, indent=4))
 
     return None
 
@@ -87,24 +62,24 @@ def main():
             # update number of wins
             if len(every_day['idiom']) <= max_num_of_tries:
                 num_of_wins += 1
-    # 给开局词打分
-    opening_phare_scores = [
-        get_score(opening_phare, ans)
-        for opening_phare, ans in zip(opening_phrases_list, ans_list)
-    ]
 
     # remove false idiom in phrases
     phrases_list = list(flatten(phrases_list))  # flatten nest list
     idioms_filter = [
-        is_idiom(idiom,
-                 read_idioms("./idiom/idioms_from_chinese_xinhua_simple.json"))
-        for idiom in phrases_list
+        True if idiom
+        in read_idioms("./idiom/idioms_from_chinese_xinhua_simple.json") else
+        False for idiom in phrases_list
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))
 
     # remove false idiom in opening phrases
     opening_idioms_list = list(
         itertools.compress(opening_phrases_list, idioms_filter))
+    # 给开局词打分
+    opening_phare_scores = [
+        get_score(opening_phare, ans)
+        for opening_phare, ans in zip(opening_phrases_list, ans_list)
+    ]
 
     # update initial, final, and tone of idiom
     for idiom in idioms_list:
@@ -123,21 +98,16 @@ def main():
     # num_of_tries_dict = list_to_sorted_dict(num_of_tries_list)
 
     # save data
-    save_dict_to_json(idioms_dict, "./output/idioms.json")
-    save_dict_to_json(opening_idioms_dict, "./output/opening_idioms.json")
-    save_dict_to_json(initials_dict, "./output/initials.json")
-    save_dict_to_json(finals_dict, "./output/finals.json")
-    save_dict_to_json(tones_dict, "./output/tones.json")
-    save_dict_to_json(num_of_tries_dict, "./output/num_of_tries.json")
-    with open("./output/time_of_tries.json", mode="w+", encoding="utf-8") as f:
-        f.write(
-            json.dumps(list(map(str, time_of_tries_list)),
-                       ensure_ascii=False,
-                       indent=4))
-    with open("./output/opening_phare_scores.json",
-              mode="w+",
-              encoding="utf-8") as f:
-        f.write(json.dumps(opening_phare_scores, ensure_ascii=False, indent=4))
+    save_to_json(idioms_dict, "./output/idioms.json")
+    save_to_json(opening_idioms_dict, "./output/opening_idioms.json")
+    save_to_json(initials_dict, "./output/initials.json")
+    save_to_json(finals_dict, "./output/finals.json")
+    save_to_json(tones_dict, "./output/tones.json")
+    save_to_json(num_of_tries_dict, "./output/num_of_tries.json")
+    save_to_json(list(map(str, time_of_tries_list)),
+                 "./output/time_of_tries.json")
+    save_to_json(opening_phare_scores, "./output/opening_phare_scores.json")
+
     # print summary
     print(
         f"游戏天数：{len(all_days)}天，获胜天数：{num_of_wins}天，胜率：{round(100 * num_of_wins / len(all_days))}%"
@@ -155,11 +125,12 @@ def main():
     print(f"最少尝试：{min(num_of_tries_list)}次")
     print(f"平均尝试：{np.round(np.mean(num_of_tries_list))}次")
     print(
-        f"总用时：{seconds_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
+        f"总用时：{int_seconds_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
     )
-    print(f"平均用时：{seconds_to_time_str(np.mean(time_of_tries_list).seconds)}")
-    print(f"最长用时：{seconds_to_time_str(max(time_of_tries_list).seconds)}")
-    print(f"最短用时：{seconds_to_time_str(min(time_of_tries_list).seconds)}")
+    print(
+        f"平均用时：{int_seconds_to_time_str(np.mean(time_of_tries_list).seconds)}")
+    print(f"最长用时：{int_seconds_to_time_str(max(time_of_tries_list).seconds)}")
+    print(f"最短用时：{int_seconds_to_time_str(min(time_of_tries_list).seconds)}")
     print(f"开局词最高分：{np.max(opening_phare_scores)}")
     print(f"开局词最低分：{np.min(opening_phare_scores)}")
     print(f"开局词平均分：{np.round(np.mean(opening_phare_scores))}")

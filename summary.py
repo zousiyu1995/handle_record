@@ -8,20 +8,10 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
-from typing import Iterable, TextIO  # for type hints
+from typing import TextIO  # for type hints
 
 import numpy as np
-from pypinyin import Style, pinyin
-
-
-def flatten(items: Iterable) -> Iterable:
-    """flatten nested iterable object"""
-    for item in items:
-        if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):
-            for sub_item in flatten(item):
-                yield sub_item
-        else:
-            yield item
+from util import flatten, get_pinyin, get_score
 
 
 def list_to_sorted_dict(a_list: list) -> dict:
@@ -41,34 +31,6 @@ def seconds_to_time_str(seconds: int) -> str:
         return f"{m}分{s}秒"
     else:
         return f"{h}时{m}分{s}秒"
-
-
-def get_pinyin(idiom: str) -> tuple:
-    """get initial, final and tone of single idiom"""
-    initials = []
-    finals = []
-    tones = []
-    for char in idiom:
-        initial: str = list(
-            flatten(pinyin(char, style=Style.INITIALS, strict=False)))[0]
-        if initial == '':
-            initial = '_'
-        initials.append(initial)
-
-        # TODO: 如何更好地分离字符串中的数字
-        # TODO: 如何处理成语中的特殊发音
-        final_and_tone: str = list(
-            flatten(pinyin(char, style=Style.FINALS_TONE3, strict=False)))[0]
-        # 只要字符串的最后一位是数字，有声调和韵母，添加tones和finals
-        if final_and_tone[-1].isdigit():
-            tones.append(final_and_tone[-1])
-            finals.append(final_and_tone[0:-1])
-        # 如果字符串的最后一位不是数字，代表没有声调，声调设置成'_'，韵母为整个字符串
-        else:
-            tones.append('_')
-            finals.append(final_and_tone)
-
-    return initials, finals, tones
 
 
 def read_idioms(idioms_file: TextIO) -> list:
@@ -96,6 +58,7 @@ def main():
     """main"""
     phrases_list = []
     opening_phrases_list = []
+    ans_list = []
     initials_list = []
     finals_list = []
     tones_list = []
@@ -111,6 +74,7 @@ def main():
             # update phrase, some phrase isn't idiom
             phrases_list.append(every_day['idiom'])
             opening_phrases_list.append(every_day['idiom'][0])
+            ans_list.append(every_day['idiom'][-1])
             # update number of tries, time of tries
             num_of_tries_list.append(len(every_day['idiom']))
             splited_time = list(map(int, every_day['time'].split(":")))
@@ -123,6 +87,11 @@ def main():
             # update number of wins
             if len(every_day['idiom']) <= max_num_of_tries:
                 num_of_wins += 1
+    # 给开局词打分
+    opening_phare_scores = [
+        get_score(opening_phare, ans)
+        for opening_phare, ans in zip(opening_phrases_list, ans_list)
+    ]
 
     # remove false idiom in phrases
     phrases_list = list(flatten(phrases_list))  # flatten nest list
@@ -165,7 +134,10 @@ def main():
             json.dumps(list(map(str, time_of_tries_list)),
                        ensure_ascii=False,
                        indent=4))
-
+    with open("./output/opening_phare_scores.json",
+              mode="w+",
+              encoding="utf-8") as f:
+        f.write(json.dumps(opening_phare_scores, ensure_ascii=False, indent=4))
     # print summary
     print(
         f"游戏天数：{len(all_days)}天，获胜天数：{num_of_wins}天，胜率：{round(100 * num_of_wins / len(all_days))}%"
@@ -188,6 +160,9 @@ def main():
     print(f"平均用时：{seconds_to_time_str(np.mean(time_of_tries_list).seconds)}")
     print(f"最长用时：{seconds_to_time_str(max(time_of_tries_list).seconds)}")
     print(f"最短用时：{seconds_to_time_str(min(time_of_tries_list).seconds)}")
+    print(f"开局词最高分：{np.max(opening_phare_scores)}")
+    print(f"开局词最低分：{np.min(opening_phare_scores)}")
+    print(f"开局词平均分：{np.round(np.mean(opening_phare_scores))}")
 
 
 if __name__ == "__main__":

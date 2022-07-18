@@ -7,26 +7,11 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
-from typing import TextIO  # for type hints
 
 import numpy as np
-from util import flatten, list_to_sorted_dict, int_seconds_to_time_str, get_pinyin, get_score
 
-
-def read_idioms(idioms_file: TextIO) -> list:
-    """return a true idiom list"""
-    with open(idioms_file, "r", encoding="utf-8") as file:
-        # idioms = [line.split()[0] for line in file] # for text file
-        idioms = json.load(file)  # for json file
-    return idioms
-
-
-def save_to_json(data, file_name: str) -> None:
-    """save to json"""
-    with open(file_name, mode='w+', encoding='utf-8') as file:
-        file.write(json.dumps(data, ensure_ascii=False, indent=4))
-
-    return None
+from util import (flatten, get_pinyin, get_score, int_seconds_to_time_str,
+                  list_to_sorted_dict, save_to_json)
 
 
 def main():
@@ -64,11 +49,14 @@ def main():
                 num_of_wins += 1
 
     # remove false idiom in phrases
+    with open("./idiom/idioms_from_chinese_xinhua_simple.json",
+              "r",
+              encoding="utf-8") as f:
+        true_idioms_list = json.load(f)
+
     phrases_list = list(flatten(phrases_list))  # flatten nest list
     idioms_filter = [
-        True if idiom
-        in read_idioms("./idiom/idioms_from_chinese_xinhua_simple.json") else
-        False for idiom in phrases_list
+        True if idiom in true_idioms_list else False for idiom in phrases_list
     ]
     idioms_list = list(itertools.compress(phrases_list, idioms_filter))
 

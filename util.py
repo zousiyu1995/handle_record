@@ -1,4 +1,5 @@
 import itertools
+import json
 from collections import Counter
 from typing import Iterable
 
@@ -13,6 +14,14 @@ def flatten(items: Iterable) -> Iterable:
                 yield sub_item
         else:
             yield item
+
+
+def save_to_json(data, file_name: str) -> None:
+    """save to json"""
+    with open(file_name, mode='w+', encoding='utf-8') as file:
+        file.write(json.dumps(data, ensure_ascii=False, indent=4))
+
+    return None
 
 
 def list_to_sorted_dict(input_list: list) -> dict:

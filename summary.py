@@ -86,15 +86,15 @@ def main():
     # num_of_tries_dict = list_to_sorted_dict(num_of_tries_list)
 
     # save data
-    save_to_json(idioms_dict, "./output/idioms.json")
-    save_to_json(opening_idioms_dict, "./output/opening_idioms.json")
-    save_to_json(initials_dict, "./output/initials.json")
-    save_to_json(finals_dict, "./output/finals.json")
-    save_to_json(tones_dict, "./output/tones.json")
+    save_to_json(idioms_dict, "./output/idiom.json")
+    save_to_json(opening_idioms_dict, "./output/opening_idiom.json")
+    save_to_json(initials_dict, "./output/initial.json")
+    save_to_json(finals_dict, "./output/final.json")
+    save_to_json(tones_dict, "./output/tone.json")
     save_to_json(num_of_tries_dict, "./output/num_of_tries.json")
     save_to_json(list(map(str, time_of_tries_list)),
                  "./output/time_of_tries.json")
-    save_to_json(opening_phare_scores, "./output/opening_phare_scores.json")
+    save_to_json(opening_phare_scores, "./output/opening_phare_score.json")
 
     # print summary
     print(
@@ -103,15 +103,18 @@ def main():
     print(
         f"无提示游戏天数：{len(all_days)-np.sum(hint_list)}天，无提示游戏比率：{np.round(100 * (1 - sum(hint_list) / len(hint_list)))}%"
     )
+
     print(f"输入四字短语总个数：{len(phrases_list)}个")
     print(f"其中成语个数：{len(idioms_list)}个")
     print(f"其中成语占比：{np.round(100*len(idioms_list)/len(phrases_list))}%")
     print(f"去重后成语个数：{len(idioms_dict)}个")
     # print(f"最常用的成语top 10：{list(idioms_dict.items())[0:9]}")
+
     print(f"总尝试：{sum(num_of_tries_list)}次")
     print(f"最多尝试：{max(num_of_tries_list)}次")
     print(f"最少尝试：{min(num_of_tries_list)}次")
     print(f"平均尝试：{np.round(np.mean(num_of_tries_list))}次")
+
     print(
         f"总用时：{int_seconds_to_time_str(sum(time_of_tries_list, timedelta(0, 0)).seconds)}"
     )
@@ -119,6 +122,7 @@ def main():
         f"平均用时：{int_seconds_to_time_str(np.mean(time_of_tries_list).seconds)}")
     print(f"最长用时：{int_seconds_to_time_str(max(time_of_tries_list).seconds)}")
     print(f"最短用时：{int_seconds_to_time_str(min(time_of_tries_list).seconds)}")
+
     print(f"开局词最高分：{np.max(opening_phare_scores)}")
     print(f"开局词最低分：{np.min(opening_phare_scores)}")
     print(f"开局词平均分：{np.round(np.mean(opening_phare_scores))}")

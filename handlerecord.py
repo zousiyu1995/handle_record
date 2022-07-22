@@ -2,25 +2,30 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
+from turtle import st
 from typing import Iterable
 
 from pypinyin import Style, pinyin
 
 
 class HandleRecord():
+    IDIOM_DICT_PATH = "./idiom/idioms_from_chinese_xinhua_simple.json"
+
     def __init__(self, record: dict) -> None:
         # 日期
         self.date: str = record['date']
         # 猜测时间
-        self.time = self.__get_time(record['time'])
+        self.time: timedelta = self.__get_time(record['time'])
         # 是否提示
         self.hint: bool = record['hint']
-        # 输入的四字短语列表
+        # 输入的四字短语
         self.phrase: list = record['idiom']
-        # 真正的成语列表
+        # phrase中真正的成语列表
         self.idiom: list = self.__get_idiom(self.phrase)
         # 开局词
         self.opening_phrase: str = record['idiom'][0]
+        # opening_phrase中的成语
+        self.opening_idiom: str = self.__get_opening_idiom(self.opening_phrase)
         # 答案
         self.ans: str = record['idiom'][-1]
         # 开局词分数
@@ -92,10 +97,8 @@ class HandleRecord():
                          minutes=splited_time_str[1],
                          seconds=splited_time_str[2])
 
-    def __get_idiom(self, phrase):
-        with open("./idiom/idioms_from_chinese_xinhua_simple.json",
-                  "r",
-                  encoding="utf-8") as f:
+    def __get_idiom(self, phrase: list):
+        with open(HandleRecord.IDIOM_DICT_PATH, "r", encoding="utf-8") as f:
             idiom_dict = json.load(f)
 
         idiom_filter = [True if i in idiom_dict else False for i in phrase]
@@ -103,7 +106,7 @@ class HandleRecord():
 
         return idiom
 
-    def __get_pinyin(self, phrase):
+    def __get_pinyin(self, phrase: list):
         """
         phrase is list or string
         """
@@ -124,7 +127,15 @@ class HandleRecord():
 
         return initial, fianl, tone
 
-    def __get_opening_phrase_score(self, opening_phrase, ans):
+    def __get_opening_idiom(self, opening_phrase: str):
+        with open(HandleRecord.IDIOM_DICT_PATH, "r", encoding="utf-8") as f:
+            idiom_dict = json.load(f)
+
+        if opening_phrase in idiom_dict:
+            return opening_phrase
+
+    def __get_opening_phrase_score(self, opening_phrase: str,
+                                   ans: str) -> float:
         """
         评估开局词的分数
         """

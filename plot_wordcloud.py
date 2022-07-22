@@ -5,13 +5,11 @@ plot 'handle' (汉兜) data
 """
 
 import json
-from typing import TextIO  # for type hints
-from matplotlib import pyplot as plt
 
-# for wordcloud
 import numpy as np
-from wordcloud import WordCloud
+from matplotlib import pyplot as plt
 from PIL import Image
+from wordcloud import WordCloud
 
 
 def read_data(file_path: str) -> dict:
@@ -19,8 +17,8 @@ def read_data(file_path: str) -> dict:
         return json.load(json_file)
 
 
-# idioms = read_data("./output/opening_idioms.json")  # 开局词
-idioms = read_data("./output/idioms.json")  # 所有输入的成语
+# idioms = read_data("./output/opening_idiom.json")  # 开局词
+idioms = read_data("./output/idiom.json")  # 所有输入的成语
 
 # generate word cloud
 wc_fig = plt.figure()

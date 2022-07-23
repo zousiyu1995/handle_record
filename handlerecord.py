@@ -2,7 +2,6 @@ import itertools
 import json
 from collections import Counter
 from datetime import timedelta
-from turtle import st
 from typing import Iterable
 
 from pypinyin import Style, pinyin
@@ -52,7 +51,7 @@ class HandleRecord():
                 yield item
 
     @staticmethod
-    def compare_list(l1: list, l2: list):
+    def compare_list(l1: list, l2: list) -> list:
         """
         输入两个相同长度的数组，检查list l1中的元素在list l2中的分布情况
 
@@ -80,14 +79,29 @@ class HandleRecord():
 
     @staticmethod
     def list_to_sorted_dict(input_list: list) -> dict:
-        """element->key, count of element->value, sort by value"""
+        """
+        element->key, count of element->value, sort by value
+        """
 
         return dict(
             sorted(Counter(list(HandleRecord.flatten(input_list))).items(),
                    key=lambda item: item[1],
                    reverse=True))
 
-    def __get_time(self, time: str):
+    @staticmethod
+    def print_time(time: timedelta) -> str:
+        """
+        int second to 'xx分xx秒' or 'xx时xx分xx秒'
+        """
+        m, s = divmod(time.seconds, 60)
+        h, m = divmod(m, 60)
+
+        if h == 0:
+            return f"{m:02}分{s:02}秒"
+        else:
+            return f"{h:02}时{m:02}分{s:02}秒"
+
+    def __get_time(self, time: str) -> timedelta:
         """
         输入时间字符串，形如"00:01:10"，返回timedelta类型
         """
@@ -97,7 +111,7 @@ class HandleRecord():
                          minutes=splited_time_str[1],
                          seconds=splited_time_str[2])
 
-    def __get_idiom(self, phrase: list):
+    def __get_idiom(self, phrase: list) -> list:
         with open(HandleRecord.IDIOM_DICT_PATH, "r", encoding="utf-8") as f:
             idiom_dict = json.load(f)
 
@@ -106,7 +120,7 @@ class HandleRecord():
 
         return idiom
 
-    def __get_pinyin(self, phrase: list):
+    def __get_pinyin(self, phrase: list) -> tuple:
         """
         phrase is list or string
         """
@@ -127,7 +141,7 @@ class HandleRecord():
 
         return initial, fianl, tone
 
-    def __get_opening_idiom(self, opening_phrase: str):
+    def __get_opening_idiom(self, opening_phrase: str) -> str:
         with open(HandleRecord.IDIOM_DICT_PATH, "r", encoding="utf-8") as f:
             idiom_dict = json.load(f)
 

@@ -1,5 +1,6 @@
 # ignore img directory
 img_answers/
+backup/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -69,7 +69,7 @@ class HandleRecord():
                 weight: [1, 0, 0.5]
         """
         # 位置相同，元素相同，得1权重
-        same_position = [1 if i == j else 0 for i, j in zip(l1, l2)]
+        same_position = [1.0 if i == j else 0 for i, j in zip(l1, l2)]
         # 位置不同，元素相同，得0.5权重
         different_position = [
             0.5 if i in l2 and i != j else 0 for i, j in zip(l1, l2)
@@ -120,7 +120,7 @@ class HandleRecord():
 
         return idiom
 
-    def __get_pinyin(self, phrase: list) -> tuple:
+    def __get_pinyin(self, phrase: list) -> tuple[list, list, list]:
         """
         phrase is list or string
         """

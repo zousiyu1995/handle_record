@@ -1,26 +1,30 @@
 # 汉兜猜词记录
 
-需要`pypinyin, wordcloud, PIL, numpy, matplotlib`库。
+## 成语词典
 
-## 文件说明
+`idiom`文件夹储存成语字典。
 
-`idiom`文件夹储存成语列表。
+`./idiom/idiom_chinese_xinhua_full.json`是来自[pwxcoo/chinese-xinhua开源项目](https://github.com/pwxcoo/chinese-xinhua)的成语字典，包含3万余条成语。
 
-`./idiom/THUOCL_chengyu.txt`是一份成语列表，来自[THUOCL：清华大学开放中文词库](http://thuocl.thunlp.org/)，包含8000余条成语。
+`./idiom/THUOCL_chengyu.txt`是来自[THUOCL：清华大学开放中文词库](http://thuocl.thunlp.org/)的成语字典，包含8000余条成语。
 
-`./idiom/idioms.txt`也是一份成语列表，来自开源项目[汉兜 Handle](https://github.com/antfu/handle)，包含2万余条成语，好像缺一些常见成语。
+`./idiom/idiom_Handle.txt`是来自开源项目[汉兜 Handle](https://github.com/antfu/handle)的成语字典，包含2万余条成语，好像缺一些常见成语。
 
-`mask.png`用于生成词云的形状。
+## 程序
 
-`output`文件夹内的文件以字典形式储存了猜词记录中的成语频率、声母频率、韵母频率和声调频率。
+`handlerecord.json`储存有每日的猜词记录，含日期、时间、是否提示和猜测所用的成语列表，纯手工打造。
 
-`qiji-combo.tff`是词云采用的字体，来自开源项目[齊伋體 qiji-font](https://github.com/LingDong-/qiji-font)。
+`handlerecord.py`是主类，用于分析每天的猜词记录。
 
-`summary.json`储存有每日的猜词记录，含日期、时间、是否提示和猜测所用的成语列表，纯手工打造。
+`main.py`是主函数，循环分析并储存所有的猜词记录。
 
-`summary.py`是主程序。
+`plot_wordcloud.py`用于绘制词云。
 
-`wc_idiom.jpg`是成语词云。
+`wc_mask.png`是词云的形状蒙版。
+
+`qiji-combo.tff`是词云的字体，来自开源项目[齊伋體 qiji-font](https://github.com/LingDong-/qiji-font)。
+
+`plot_summary.m`用于生成猜词记录统计图。
 
 ## 词云输出效果
 

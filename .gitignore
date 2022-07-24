@@ -1,5 +1,5 @@
 # ignore img directory
-img_answers/
+# img_answers/
 backup/
 
 # Byte-compiled / optimized / DLL files

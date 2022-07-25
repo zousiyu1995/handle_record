@@ -16,7 +16,7 @@ def save_to_json(data, file_name: str) -> None:
 
 def main() -> None:
     # get records
-    with open("summary.json", "r", encoding="utf-8") as json_file:
+    with open("./handlerecord.json", "r", encoding="utf-8") as json_file:
         record = [HandleRecord(i) for i in json.load(json_file)]
 
         win = [i.win for i in record]

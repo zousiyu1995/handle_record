@@ -8,7 +8,7 @@ from pypinyin import Style, pinyin
 
 
 class HandleRecord():
-    IDIOM_DICT_PATH = "./idiom/idioms_from_chinese_xinhua_simple.json"
+    IDIOM_DICT_PATH = "./idiom/idiom_chinese_xinhua_simple.json"
 
     def __init__(self, record: dict) -> None:
         # 日期
